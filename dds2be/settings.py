@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from os import environ as CONFIG
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2qpqt3%=%=qta+h(c(h-x#f=#x-*n%uhr=cf7^yym$&y3l%o&*'
+SECRET_KEY = CONFIG['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     # third party
     'rest_framework',
     'rest_framework.authtoken',
+    'storages',
     # apps
     'dds2api'
 ]
@@ -143,3 +146,38 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# django-storage
+#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# Your Amazon Web Services access key
+#AWS_ACCESS_KEY_ID = CONFIG['AWS_ACCESS_KEY_ID']
+# Your Amazon Web Services secret access key, as a string.
+#AWS_SECRET_ACCESS_KEY = CONFIG['AWS_SECRET_ACCESS_KEY']
+# Your Amazon Web Services storage bucket name, as a string.
+#AWS_STORAGE_BUCKET_NAME = CONFIG['AWS_STORAGE_BUCKET_NAME']
+# (optional, None or canned ACL, default public-read)
+AWS_DEFAULT_ACL = None
+
+# storages
+AWS_ACCESS_KEY_ID = CONFIG['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = CONFIG['AWS_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = CONFIG['AWS_STORAGE_BUCKET_NAME']
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_S3_REGION_NAME = 'us-east-2'
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+#AWS_STATIC_LOCATION = 'static'
+#STATICFILES_STORAGE = 'dds2be.storage_backends.StaticStorage'
+#STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
+
+#AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
+#DEFAULT_FILE_STORAGE = 'dds2be.storage_backends.PublicMediaStorage'
+
+AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
+PRIVATE_FILE_STORAGE = 'dds2be.storage_backends.PrivateMediaStorage'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'profile'

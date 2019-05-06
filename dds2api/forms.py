@@ -18,6 +18,9 @@ class StorageCredentialForm(forms.ModelForm):
 
 
 class AttachmentForm(forms.ModelForm):
+    # original_filename = forms.CharField()
+    # original_filename.widget.attrs['readonly'] = True
+
     class Meta:
         model = Attachment
         fields = '__all__'

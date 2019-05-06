@@ -3,6 +3,7 @@
 from django.contrib import admin
 from .forms import (
     StorageCredentialForm,
+    AttachmentForm,
 )
 
 from .models import (
@@ -12,8 +13,11 @@ from .models import (
     BalanceEntry,
     Tag,
     StorageCredential,
+    Domain,
     Sender,
     Attachment,
+    Broadcast,
+    DataSet
 )
 
 
@@ -73,6 +77,11 @@ class AdminStorageCredential(AdminAuthSignature):
     form = StorageCredentialForm
 
 
+class AdminDomain(AdminAuthSignature):
+    """Domain"""
+    list_display = ('name', 'verified')
+
+
 class AdminSender(AdminAuthSignature):
     """Sender"""
     list_display = ('name', 'email', 'mobile_number',
@@ -81,6 +90,17 @@ class AdminSender(AdminAuthSignature):
 
 class AdminAttachment(AdminAuthSignature):
     """Attachment"""
+    form = AttachmentForm
+    list_display = ('description', 'original_filename', 'created_on',
+                    'created_by', 'modified_on', 'modified_by')
+
+
+class AdminBroadcast(AdminAuthSignature):
+    """Broadcast"""
+
+
+class AdminDataSet(AdminAuthSignature):
+    """Broadcast"""
 
 
 admin.site.register(Tenant, TenantAdmin)
@@ -89,5 +109,8 @@ admin.site.register(Role)
 admin.site.register(BalanceEntry, AdminBalanceEntry)
 admin.site.register(Tag, AdminTag)
 admin.site.register(StorageCredential, AdminStorageCredential)
+admin.site.register(Domain, AdminDomain)
 admin.site.register(Sender, AdminSender)
 admin.site.register(Attachment, AdminAttachment)
+admin.site.register(Broadcast, AdminBroadcast)
+admin.site.register(DataSet, AdminDataSet)

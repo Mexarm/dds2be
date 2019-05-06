@@ -18,7 +18,6 @@ class TagSerializer(serializers.ModelSerializer):
         """
         Check if the slug for the tag exists
         """
-        print(data)
         if Tag.objects.filter(tenant=data['tenant'], slug=slugify(data['tag'])).exists():
             raise serializers.ValidationError("tag already exists")
         return data
