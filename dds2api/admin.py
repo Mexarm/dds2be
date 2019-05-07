@@ -3,7 +3,6 @@
 from django.contrib import admin
 from .forms import (
     StorageCredentialForm,
-    AttachmentForm,
 )
 
 from .models import (
@@ -90,9 +89,9 @@ class AdminSender(AdminAuthSignature):
 
 class AdminAttachment(AdminAuthSignature):
     """Attachment"""
-    form = AttachmentForm
     list_display = ('description', 'original_filename', 'created_on',
                     'created_by', 'modified_on', 'modified_by')
+    readonly_fields = ('original_filename',)
 
 
 class AdminBroadcast(AdminAuthSignature):

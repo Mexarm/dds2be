@@ -14,3 +14,13 @@ class UserIsTenantMember(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.tenant.id in user_tenants(request)
+
+
+class IsOwner(permissions.BasePermission):
+    """
+    Custom permission allow only if the user the owner of
+    the object
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return obj.user.id == request.user.id

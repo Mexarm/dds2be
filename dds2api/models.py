@@ -286,10 +286,11 @@ class Attachment(TenantAware, AuthSignature):
                                     blank=True,
                                     on_delete=models.CASCADE)
 
-    @property
-    def original_filename(self):
+    def _original_filename(self):
         encoded_filename = self.file.name.split('/')[-1]
         return base64.urlsafe_b64decode(encoded_filename).decode('utf-8')
+
+    original_filename = property(_original_filename)
 
     def __str__(self):
         return f'{self.description} ({self.original_filename})'

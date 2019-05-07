@@ -1,39 +1,63 @@
-from rest_framework import generics, permissions
-from django.http import HttpResponse
-
+from rest_framework import viewsets, permissions
+#from rest_framework.decorators import action
+#from rest_framework.response import Response
 from .models import (
+    Profile,
     Tenant,
+    # Role,
+    BalanceEntry,
     Tag,
+    StorageCredential,
+    Domain,
+    Sender,
+    Attachment,
+    Broadcast,
+    DataSet,
 )
 from .serializers import (
+    ProfileSerializer,
     TenantSerializer,
+    # RoleSerializer,
+    BalanceEntrySerializer,
     TagSerializer,
+    StorageCredentialSerializer,
+    DomainSerializer,
+    SenderSerializer,
+    AttachmentSerializer,
+    BroadcastSerializer,
+    DataSetSerializer,
 )
 
-from .permissions import UserIsTenantMember, user_tenants
+from .permissions import (
+    UserIsTenantMember,
+    IsOwner,
+    user_tenants
+)
 
 
-def test(request):
-    mytags = Tag.objects.filter(tenant__in=user_tenants(request))
-    tags = [
-        f'{tag.tenant}/{tag.tag}' for tag in mytags]
+class ProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = ProfileSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwner)
 
-    return HttpResponse(f'hello {request.user.username} your tags {tags}')
+    def get_queryset(self):
+        return Profile.objects.filter(user=self.request.user)
 
 
-class TenantList(generics.ListCreateAPIView):
+class TenantViewSet(viewsets.ModelViewSet):
     queryset = Tenant.objects.all()
     serializer_class = TenantSerializer
-    permission_classes = (permissions.IsAdminUser)
+    permission_classes = (permissions.IsAdminUser,)
 
 
-class TenantDetail(generics.RetrieveUpdateDestroyAPIView):  # pylint: disable=too-many-ancestors
-    queryset = Tenant.objects.all()
-    serializer_class = TenantSerializer
-    permission_classes = (permissions.IsAdminUser)
+class BalanceEntryViewSet(viewsets.ModelViewSet):
+    serializer_class = BalanceEntrySerializer
+    permission_classes = (permissions.IsAuthenticated, UserIsTenantMember)
+
+    def get_queryset(self):
+        return BalanceEntry.objects.filter(tenant__in=user_tenants(self.request))
 
 
-class TagList(generics.ListCreateAPIView):
+class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
     permission_classes = (permissions.IsAuthenticated, UserIsTenantMember)
 
@@ -41,9 +65,49 @@ class TagList(generics.ListCreateAPIView):
         return Tag.objects.filter(tenant__in=user_tenants(self.request))
 
 
-class TagDetail(generics.RetrieveUpdateDestroyAPIView):  # pylint: disable=too-many-ancestors
-    serializer_class = TagSerializer
+class StorageCredentialViewSet(viewsets.ModelViewSet):
+    serializer_class = StorageCredentialSerializer
     permission_classes = (permissions.IsAuthenticated, UserIsTenantMember)
 
     def get_queryset(self):
-        return Tag.objects.filter(tenant__in=user_tenants(self.request))
+        return StorageCredential.objects.filter(tenant__in=user_tenants(self.request))
+
+
+class DomainViewSet(viewsets.ModelViewSet):
+    serializer_class = DomainSerializer
+    permission_classes = (permissions.IsAuthenticated, UserIsTenantMember)
+
+    def get_queryset(self):
+        return Domain.objects.filter(tenant__in=user_tenants(self.request))
+
+
+class SenderViewSet(viewsets.ModelViewSet):
+    serializer_class = SenderSerializer
+    permission_classes = (permissions.IsAuthenticated, UserIsTenantMember)
+
+    def get_queryset(self):
+        return Sender.objects.filter(tenant__in=user_tenants(self.request))
+
+
+class AttachmentViewSet(viewsets.ModelViewSet):
+    serializer_class = AttachmentSerializer
+    permission_classes = (permissions.IsAuthenticated, UserIsTenantMember)
+
+    def get_queryset(self):
+        return Attachment.objects.filter(tenant__in=user_tenants(self.request))
+
+
+class BroadcastViewSet(viewsets.ModelViewSet):
+    serializer_class = BroadcastSerializer
+    permission_classes = (permissions.IsAuthenticated, UserIsTenantMember)
+
+    def get_queryset(self):
+        return Broadcast.objects.filter(tenant__in=user_tenants(self.request))
+
+
+class DataSetViewSet(viewsets.ModelViewSet):
+    serializer_class = DataSetSerializer
+    permission_classes = (permissions.IsAuthenticated, UserIsTenantMember)
+
+    def get_queryset(self):
+        return DataSet.objects.filter(tenant__in=user_tenants(self.request))

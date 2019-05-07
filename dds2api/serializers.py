@@ -1,15 +1,42 @@
 from django.utils.text import slugify
 from rest_framework import serializers
 from .models import (
+    Profile,
     Tenant,
-    Tag
+    Role,
+    BalanceEntry,
+    Tag,
+    StorageCredential,
+    Domain,
+    Sender,
+    Attachment,
+    Broadcast,
+    DataSet,
 )
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'
 
 
 class TenantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tenant
         fields = ('id', 'tenant', 'description')
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = '__all__'
+
+
+class BalanceEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BalanceEntry
+        fields = '__all__'
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -27,3 +54,41 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'tenant', 'tag', 'slug')
+
+
+class StorageCredentialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StorageCredential
+        fields = '__all__'
+
+
+class DomainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Domain
+        fields = '__all__'
+
+
+class SenderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sender
+        fields = '__all__'
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    original_filename = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Attachment
+        fields = '__all__'
+
+
+class BroadcastSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Broadcast
+        fields = '__all__'
+
+
+class DataSetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DataSet
+        fields = '__all__'
